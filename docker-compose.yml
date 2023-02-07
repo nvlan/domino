@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: domino
+    image: domino
+    volumes:
+      - ./:/opt/code
+    user: ${MY_USER:-root}
+    ports:
+      - "8080:8080"
+    environment:
+      FLASK_CONFIG: Test

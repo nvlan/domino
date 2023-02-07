@@ -1,0 +1,178 @@
+#%RAML 1.0
+title: "Domino"
+description: "DOMaIN Orchestrator"
+version: "1.0.0"
+protocols:
+- "HTTP"
+baseUri: "http://domain.com/api/domino"
+mediaType:
+- "application/json"
+securitySchemes:
+  JWT Bearer token:
+    type: "Bearer token"
+securedBy:
+- "JWT Bearer token"
+/zones:
+  displayName: "Get zones"
+  get:
+    displayName: "Get available zones"
+    body:
+      type: "object"
+    responses:
+      200:
+        body:
+          type: "dict"
+          example:
+            value: "{\n\"domain-ar.com.ar\": \"Z0XXXX592PEXXXXXSHGXX\",\
+              \n\"domain-br.com\": \"Z0XXXX592PEXXXXXSHGYY\",\
+              \n\"domain-cl.cl\": \"Z0XXXX592PEXXXXXSHGZZ\",\
+              \n}"
+            strict: false
+/records:
+  displayName: "Get records"
+  get:
+    displayName: "Get all records in a zone"
+    body:
+      type: "object"
+      example:
+        value: "{\"id_zone\": \"Z0XXXX592PEXXXXXSHGXX\"}"
+    responses:
+      200:
+        body:
+          type: "object"
+          example:
+            value: "{\
+              \n\"Resource records\": [\
+              \n{\
+              \n\"Name\": \"a-test.dominotest.com.\",\
+              \n\"ResourceRecords\": [\
+              \n  {\
+              \n      \"Value\": \"testing.dominotest.com\"\
+              \n  }\
+              \n],\
+              \n\"TTL\": 300,\
+              \n\"Type\": \"CNAME\"\
+              \n}\
+              \n]
+              \n}"
+            strict: false
+      400:
+        body:
+          type: "error"
+          example:
+            value: "{\"message\": \"Missing or wrong data in the request, please check the docs\"}"
+      403:
+        body:
+          type: "error"
+            example:
+              value: "{\
+              \n\"error\": true,\
+              \n\"message\": \"Not Authorized\",\
+              \n\"reason\": \"Reject reason will show up here\"\
+            \n}"
+      409:
+        body:
+          type: "error"
+            example:
+            value: "{\"error\": \"The zone does not exist\"}"
+
+  post:
+    displayName: "Create a new record in a zone"
+    body:
+      type: "object"
+      example:
+        value: "{\"id_zone\": \"Z0XXXX592PEXXXXXSHGXX\",\
+                \"zone\": \"zone.com.ar\",\
+                \n\"subdomain\": \"test-subdomain\"}"
+    responses:
+      200:
+        body:
+          type: "object"
+          example:
+            value: "{\"Success\": \"The record a-new-example.dominotest.com. has been created\"}"
+
+      400:
+        body:
+          type: "error"
+          example:
+            value: "{\"Error\": \"Missing or wrong data in the request, please check the apiref\"}"
+      403:
+        body:
+          type: "error"
+            example:
+              value: "{\
+              \n\"error\": true,\
+              \n\"message\": \"Not Authorized\",\
+              \n\"reason\": \"Reject reason will show up here\"\
+            \n}"
+      409:
+        body:
+          type: "error"
+          example:
+            value: "{\"Error\": \"The subdomain is in use\"}"
+  patch:
+    displayName: "Modify an existing record in a zone"
+    body:
+      type: "object"
+      example:
+        value: "{\"id_zone\": \"Z0XXXX592PEXXXXXSHGXX\",\
+                \"zone\": \"zone.com.ar\",\
+                \"subdomain\": \"test-subdomain\",\
+                \n\"new_subdomain\": \"test2-subdomain\"}"
+    responses:
+      200:
+        body:
+          type: "object"
+          example:
+            value: "{\"Success\": \"The record a-new-example.dominotest.com. has been updated\"}"
+
+
+      400:
+        body:
+          type: "error"
+          example:
+            value: "{\"Error\": \"Missing or wrong data in the request, please check the apiref\"}"
+      403:
+        body:
+          type: "error"
+            example:
+              value: "{\
+              \n\"error\": true,\
+              \n\"message\": \"Not Authorized\",\
+              \n\"reason\": \"Reject reason will show up here\"\
+            \n}"
+
+  delete:
+    displayName: "Deletes a record in a zone"
+    body:
+      type: "object"
+      example:
+        value: "{\"id_zone\": \"Z0XXXX592PEXXXXXSHGXX\",\
+                \"zone\": \"zone.com.ar\",\
+                \n\"subdomain\": \"test-subdomain\"}"
+    responses:
+      200:
+        body:
+          type: "object"
+          example:
+            value: "{\"Success\": \"The record random-example.dominotest.com. has been deleted\"}"
+
+      400:
+        body:
+          type: "error"
+          example:
+            value: "{\"Error\": \"Missing or wrong data in the request, please check the apiref\"}"
+      403:
+        body:
+          type: "error"
+            example:
+              value: "{\
+              \n\"error\": true,\
+              \n\"message\": \"Not Authorized\",\
+              \n\"reason\": \"Reject reason will show up here\"\
+            \n}"
+      409:
+        body:
+          type: "error"
+          example:
+            value: "{\"Error\": \"the record you want to delete does not exist\"}"
